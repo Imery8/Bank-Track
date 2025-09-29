@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Navigation from '@/components/layout/Navigation'
@@ -13,11 +13,7 @@ export default function AddTransactionPage() {
   const [account, setAccount] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadAccount()
-  }, [params.id])
-
-  const loadAccount = async () => {
+  const loadAccount = useCallback(async () => {
     try {
       const accounts = await getAccounts()
       const currentAccount = accounts.find(acc => acc.id === params.id)
@@ -33,7 +29,11 @@ export default function AddTransactionPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, router])
+
+  useEffect(() => {
+    loadAccount()
+  }, [loadAccount])
 
   const handleAddTransaction = async (transactionData) => {
     try {
