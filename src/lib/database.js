@@ -14,12 +14,18 @@ export async function getAccounts() {
 
 export async function createAccount(name, initialBalance) {
   const supabase = createClient()
+
+  // Get the current user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('User not authenticated')
+
   const { data, error } = await supabase
     .from('accounts')
     .insert({
       name,
       initial_balance: initialBalance,
-      current_balance: initialBalance
+      current_balance: initialBalance,
+      user_id: user.id
     })
     .select()
     .single()

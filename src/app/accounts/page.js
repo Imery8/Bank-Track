@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Navigation from '@/components/layout/Navigation'
 import AccountCard from '@/components/ui/AccountCard'
 import AccountForm from '@/components/forms/AccountForm'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { getAccounts, createAccount, deleteAccount } from '@/lib/database'
 
 export default function AccountsPage() {
@@ -12,6 +13,7 @@ export default function AccountsPage() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [deleting, setDeleting] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState({ show: false, accountId: null, accountName: '' })
   const router = useRouter()
 
   useEffect(() => {
@@ -39,12 +41,20 @@ export default function AccountsPage() {
     }
   }
 
-  const handleDeleteAccount = async (accountId) => {
-    if (!confirm('Are you sure you want to delete this account? All transactions will also be deleted.')) {
-      return
-    }
+  const handleDeleteAccount = (accountId) => {
+    const account = accounts.find(acc => acc.id === accountId)
+    setConfirmDelete({
+      show: true,
+      accountId,
+      accountName: account?.name || 'this account'
+    })
+  }
 
+  const confirmDeleteAccount = async () => {
+    const accountId = confirmDelete.accountId
     setDeleting(accountId)
+    setConfirmDelete({ show: false, accountId: null, accountName: '' })
+
     try {
       await deleteAccount(accountId)
       setAccounts(accounts.filter(account => account.id !== accountId))
@@ -54,6 +64,10 @@ export default function AccountsPage() {
     } finally {
       setDeleting(null)
     }
+  }
+
+  const cancelDelete = () => {
+    setConfirmDelete({ show: false, accountId: null, accountName: '' })
   }
 
   if (loading) {
@@ -117,6 +131,17 @@ export default function AccountsPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmDelete.show}
+        onClose={cancelDelete}
+        onConfirm={confirmDeleteAccount}
+        title="Delete Account"
+        message={`Are you sure you want to delete "${confirmDelete.accountName}"? All transactions will also be deleted. This action cannot be undone.`}
+        confirmText="Delete Account"
+        cancelText="Cancel"
+        danger={true}
+      />
     </div>
   )
 }

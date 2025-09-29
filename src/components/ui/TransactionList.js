@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import { deleteTransaction } from '@/lib/database'
+import ConfirmDialog from './ConfirmDialog'
 
 export default function TransactionList({ transactions, onTransactionDeleted }) {
   const [deletingId, setDeletingId] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState({ show: false, transactionId: null, description: '' })
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -21,10 +23,20 @@ export default function TransactionList({ transactions, onTransactionDeleted }) 
     })
   }
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this transaction?')) return
+  const handleDelete = (id) => {
+    const transaction = transactions.find(t => t.id === id)
+    setConfirmDelete({
+      show: true,
+      transactionId: id,
+      description: transaction?.description || 'this transaction'
+    })
+  }
 
+  const confirmDeleteTransaction = async () => {
+    const id = confirmDelete.transactionId
     setDeletingId(id)
+    setConfirmDelete({ show: false, transactionId: null, description: '' })
+
     try {
       await deleteTransaction(id)
       onTransactionDeleted(id)
@@ -34,6 +46,10 @@ export default function TransactionList({ transactions, onTransactionDeleted }) 
     } finally {
       setDeletingId(null)
     }
+  }
+
+  const cancelDelete = () => {
+    setConfirmDelete({ show: false, transactionId: null, description: '' })
   }
 
   if (transactions.length === 0) {
@@ -79,6 +95,17 @@ export default function TransactionList({ transactions, onTransactionDeleted }) 
           </button>
         </div>
       ))}
+
+      <ConfirmDialog
+        isOpen={confirmDelete.show}
+        onClose={cancelDelete}
+        onConfirm={confirmDeleteTransaction}
+        title="Delete Transaction"
+        message={`Are you sure you want to delete "${confirmDelete.description}"? This action cannot be undone.`}
+        confirmText="Delete Transaction"
+        cancelText="Cancel"
+        danger={true}
+      />
     </div>
   )
 }

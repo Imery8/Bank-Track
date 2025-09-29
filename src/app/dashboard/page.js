@@ -140,12 +140,29 @@ export default function Dashboard() {
                 Manage Accounts
               </Link>
               {accounts.length > 0 && (
-                <Link
-                  href={`/accounts/${accounts[0].id}/add-transaction`}
-                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors font-medium"
-                >
-                  Quick Transaction
-                </Link>
+                <div className="relative">
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        window.location.href = `/accounts/${e.target.value}/add-transaction`
+                      }
+                    }}
+                    className="bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors font-medium border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none pr-10"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Quick Transaction</option>
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        Add to {account.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               )}
             </div>
           </div>

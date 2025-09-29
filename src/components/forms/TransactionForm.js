@@ -67,7 +67,7 @@ export default function TransactionForm({ onSubmit, accountName }) {
               id="type"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
             >
               <option value="debit">Expense/Purchase (Debit)</option>
               <option value="credit">Add Money (Credit)</option>
@@ -85,7 +85,7 @@ export default function TransactionForm({ onSubmit, accountName }) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500 bg-white"
               required
             />
           </div>
@@ -101,7 +101,7 @@ export default function TransactionForm({ onSubmit, accountName }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="e.g., Grocery shopping, Gas, Transfer from bank"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-500 bg-white"
             required
           />
         </div>
@@ -115,7 +115,7 @@ export default function TransactionForm({ onSubmit, accountName }) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 bg-white"
             required
           />
         </div>
